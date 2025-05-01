@@ -3,7 +3,7 @@ from icecream import ic
 from constants.constants import ErrorsParams
 
 
-class PoolController:
+class RegexController:
     def __init__(self):
         pass
 

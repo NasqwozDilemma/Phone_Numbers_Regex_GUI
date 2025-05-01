@@ -2,7 +2,7 @@ class MainWindowParams:
     MAIN_WINDOW_NAME = "Преобразование телефонных номеров в регулярные выражения"
     ICON_PATH = "./config/reg_exp.ico"
     MIN_WIDTH = 1800
-    MIN_HEIGHT = 850
+    MIN_HEIGHT = 900
 
 
 class ErrorsParams:
@@ -15,14 +15,14 @@ class ErrorsParams:
     ERROR_OPTIMIZE_REGEX = "Ошибка при оптимизации регулярных выражений."
     ERROR_PREPARE_POOLS = "Ошибка в конечной подготовке телефонных номеров."
     ERROR_PREPARE_REGEX = "Ошибка в конечной подготовке регулярных выражений."
-    ERROR_COPY_TEXT = "Ошибка при копировании текст."
-    ERROR_PASTE_TEXT = "Ошибка при вставке текст."
-    ERROR_CUT_TEXT = "Ошибка при вырезании текст."
+    ERROR_COPY_TEXT = "Ошибка при копировании текста."
+    ERROR_PASTE_TEXT = "Ошибка при вставке текста."
+    ERROR_CUT_TEXT = "Ошибка при вырезании текста."
     ERROR_UNDO_TEXT = "Ошибка при отмене последней операции."
 
 
 class DataFrameParams:
-    POOL = "Номера телефонов"
+    POOL = "Номера телефонов (пулы номеров указываются через дефис, отделенный пробелами с двух сторон)"
     REGEXP = "Регулярные выражения"
 
 
@@ -33,6 +33,21 @@ class CommandFrameParams:
     SEPARATOR = "Разделитель"
     DOT = "Использовать точку вместо диапазона"
     SPECIAL_SYMBOLS = "Убрать специальные символы (^ и $)"
+
+
+class CompareDataFrameParams:
+    LEFT_REGEXP = "Регулярные выражения"
+    RIGHT_REGEXP = "Регулярные выражения"
+    LEFT_RESULT = "Отличия в первом регулярном выражении"
+    RIGHT_RESULT = "Отличия во втором регулярном выражении"
+
+
+class CompareCommandFrameParams:
+    COMMAND_COMPARE_REGEXPS_BUTTON = "Сравнить регулярные выражения"
+    CLEAR_BUTTON_TEXT = "Очистка полей"
+    LEFT_SEPARATOR = "Разделитель в первом регулярном выражении"
+    RIGHT_SEPARATOR = "Разделитель во втором регулярном выражении"
+    DISPLAY_POOLS = "Отобразить различия в виде телефонных номеров"
 
 
 class SpecialSymbolsParams:

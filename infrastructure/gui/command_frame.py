@@ -4,8 +4,8 @@ import customtkinter as ctk
 
 from constants.constants import CommandFrameParams
 from domains.domains import PhoneNumbersData
-from interface_adapters.controllers.pool_to_regex_controller import RegexController
-from interface_adapters.controllers.regex_to_pool_controller import PoolController
+from interface_adapters.controllers.pool_to_regex_controller import PoolController
+from interface_adapters.controllers.regex_to_pool_controller import RegexController
 from interface_adapters.presentators.pool_to_regex_presentator import RegexPresentator
 from interface_adapters.presentators.regex_to_pool_presentator import PoolPresentator
 from use_cases.optimization_pool_to_regex import RegexOptimizer
@@ -47,7 +47,7 @@ class CommandFrame(ctk.CTkFrame):
         self.create_elements()
 
     def pool_to_regex_execute(self):
-        self.parent.dataframe.regexp_text.delete("1.0", END)
+        self.parent.master.master.data_frame.regexp_text.delete("1.0", END)
 
         separator = self.separator_entry.get()
         if separator == "":
@@ -59,7 +59,7 @@ class CommandFrame(ctk.CTkFrame):
 
         try:
             phone_numbers_data = PhoneNumbersData([])
-            groups = self.regex_controller.prepare_data(self.parent.dataframe.pools_text.get("1.0", "end-1c"))
+            groups = self.pool_controller.prepare_data(self.parent.master.master.data_frame.pools_text.get("1.0", "end-1c"))
             phone_numbers_data.data_list = groups
 
             regexes = self.regex_manager.pools_to_regex(phone_numbers_data, separator, unuse_special_symbols)
@@ -68,13 +68,13 @@ class CommandFrame(ctk.CTkFrame):
 
             result = self.regex_presentator.prepare_data(optimized_regexes, separator)
 
-            self.parent.dataframe.regexp_text.insert("1.0", result)
+            self.parent.master.master.data_frame.regexp_text.insert("1.0", result)
         except Exception as e:
             self.gui_adapter.show_error(message=e)
             raise e
 
     def regex_to_pool_execute(self):
-        self.parent.dataframe.pools_text.delete("1.0", END)
+        self.parent.master.master.data_frame.pools_text.delete("1.0", END)
 
         separator = self.separator_entry.get()
         if separator == "":
@@ -82,8 +82,8 @@ class CommandFrame(ctk.CTkFrame):
 
         try:
             phone_numbers_data = PhoneNumbersData([])
-            regexes = self.pool_controller.prepare_data(
-                self.parent.dataframe.regexp_text.get("1.0", "end-1c"), separator
+            regexes = self.regex_controller.prepare_data(
+                self.parent.master.master.data_frame.regexp_text.get("1.0", "end-1c"), separator
             )
             phone_numbers_data.data_list = regexes
 
@@ -93,14 +93,14 @@ class CommandFrame(ctk.CTkFrame):
 
             result = self.pool_presentator.prepare_data(optimized_pools)
 
-            self.parent.dataframe.pools_text.insert("1.0", result)
+            self.parent.master.master.data_frame.pools_text.insert("1.0", result)
         except Exception as e:
             self.gui_adapter.show_error(message=e)
             raise e
 
     def clear_fields(self):
-        self.parent.dataframe.pools_text.delete("1.0", END)
-        self.parent.dataframe.regexp_text.delete("1.0", END)
+        self.parent.master.master.data_frame.pools_text.delete("1.0", END)
+        self.parent.master.master.data_frame.regexp_text.delete("1.0", END)
         self.separator_entry.delete(0, END)
         self.dot_status.set(False)
 

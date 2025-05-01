@@ -2,12 +2,12 @@ import tkinter as tk
 
 import customtkinter as ctk
 from constants.constants import ErrorsParams
-from constants.constants import DataFrameParams
+from constants.constants import CompareDataFrameParams
 
 
-class DataFrame(ctk.CTkFrame):
+class CompareDataFrame(ctk.CTkFrame):
     """
-    Фрейм с элементами для данных.
+    Фрейм с элементами для данных для сравнения регулярных выражений.
     """  # noqa: RUF002
 
     def __init__(self, parent):
@@ -15,7 +15,7 @@ class DataFrame(ctk.CTkFrame):
         self.pack(padx=20, pady=10, fill="both")
         self.parent = parent
 
-        self.grid_rowconfigure((0, 1), weight=1)
+        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
         self.grid_columnconfigure((0, 1), weight=1)
 
         self.create_elements()
@@ -73,14 +73,26 @@ class DataFrame(ctk.CTkFrame):
         widget.bind("<Control-Key>", lambda e: self.on_ctrl_key(e, field))
 
     def create_elements(self):
-        self.pools_label = ctk.CTkLabel(self, text=DataFrameParams.POOL)
-        self.pools_label.grid(row=0, column=0, padx=10, pady=(5, 0), sticky="s")
-        self.pools_text = ctk.CTkTextbox(self, font=("", 14), wrap=tk.WORD, height=625, width=800, undo=True)
-        self.pools_text.grid(row=1, column=0, padx=10, pady=(0, 20), sticky="n")
-        self.bind_events(self.pools_text, self.pools_text)
+        self.left_regexp_label = ctk.CTkLabel(self, text=CompareDataFrameParams.LEFT_REGEXP)
+        self.left_regexp_label.grid(row=0, column=0, padx=10, pady=(5, 0), sticky="s")
+        self.left_regexp_text = ctk.CTkTextbox(self, font=("", 14), wrap=tk.WORD, height=450, width=800, undo=True)
+        self.left_regexp_text.grid(row=1, column=0, padx=10, pady=(0, 20), sticky="n")
+        self.bind_events(self.left_regexp_text, self.left_regexp_text)
 
-        self.regexp_label = ctk.CTkLabel(self, text=DataFrameParams.REGEXP)
-        self.regexp_label.grid(row=0, column=1, padx=10, pady=(5, 0), sticky="s")
-        self.regexp_text = ctk.CTkTextbox(self, font=("", 14), wrap=tk.WORD, height=625, width=800, undo=True)
-        self.regexp_text.grid(row=1, column=1, padx=10, pady=(0, 20), sticky="n")
-        self.bind_events(self.regexp_text, self.regexp_text)
+        self.right_regexp_label = ctk.CTkLabel(self, text=CompareDataFrameParams.RIGHT_REGEXP)
+        self.right_regexp_label.grid(row=0, column=1, padx=10, pady=(5, 0), sticky="s")
+        self.right_regexp_text = ctk.CTkTextbox(self, font=("", 14), wrap=tk.WORD, height=450, width=800, undo=True)
+        self.right_regexp_text.grid(row=1, column=1, padx=10, pady=(0, 20), sticky="n")
+        self.bind_events(self.right_regexp_text, self.right_regexp_text)
+
+        self.left_result_label = ctk.CTkLabel(self, text=CompareDataFrameParams.LEFT_RESULT)
+        self.left_result_label.grid(row=2, column=0, padx=10, pady=(5, 0), sticky="s")
+        self.left_result_text = ctk.CTkTextbox(self, font=("", 14), wrap=tk.WORD, height=125, width=800, undo=True)
+        self.left_result_text.grid(row=3, column=0, padx=10, pady=(0, 20), sticky="n")
+        self.bind_events(self.left_result_text, self.left_result_text)
+
+        self.right_result_label = ctk.CTkLabel(self, text=CompareDataFrameParams.RIGHT_RESULT)
+        self.right_result_label.grid(row=2, column=1, padx=10, pady=(5, 0), sticky="s")
+        self.right_result_text = ctk.CTkTextbox(self, font=("", 14), wrap=tk.WORD, height=125, width=800, undo=True)
+        self.right_result_text.grid(row=3, column=1, padx=10, pady=(0, 20), sticky="n")
+        self.bind_events(self.right_result_text, self.right_result_text)
