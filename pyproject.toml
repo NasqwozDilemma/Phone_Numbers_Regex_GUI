@@ -1,7 +1,7 @@
 [project]
 name = "phone-numbers-regex-gui"
-version = "0.1.0"
-description = "Add your description here"
+version = "2025.05.04"
+description = "Numbers to Regex transformations."
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [

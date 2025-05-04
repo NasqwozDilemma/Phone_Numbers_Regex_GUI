@@ -83,12 +83,16 @@ class RegexManager:
                     f"{new_start_suffix[0:i]}"
                     f"[{int(new_start_suffix[i])}-9]{dollar_symbol}"
                 )
+                ic(1)
+                ic(regex_parts)
             elif len(new_start_suffix[i:]) - 1 == 1:
                 regex_parts.append(
                     f"{caret_symbol}{re.escape(new_common_prefix)}"
                     f"{new_start_suffix[0:i]}"
                     f"[{int(new_start_suffix[i]) + 1}-9][0-9]{dollar_symbol}"
                 )
+                ic(2)
+                ic(regex_parts)
             else:
                 if f"{{{len(new_start_suffix) - 1}}}" == "{1}":
                     regex_parts.append(
@@ -99,6 +103,8 @@ class RegexManager:
                         f"{int(new_end_suffix[i])}]"
                         f"[0-9]{dollar_symbol}"
                     )
+                    ic(3)
+                    ic(regex_parts)
                 else:
                     regex_parts.append(
                         f"{caret_symbol}{re.escape(common_prefix)}"
@@ -106,8 +112,11 @@ class RegexManager:
                         f"{str(int(start_suffix[i]))}"
                         f"[{int(new_start_suffix[i]) + 1}-"
                         f"{int(new_end_suffix[i])}]"
-                        f"[0-9]{{{len(new_start_suffix) - 1}}}{dollar_symbol}"
+                        f"[0-9]{{{len(new_start_suffix) - i - 1}}}{dollar_symbol}"
                     )
+                    ic(4)
+                    ic(new_start_suffix)
+                    ic(regex_parts)
         digits_count = int(end_suffix[0]) - int(start_suffix[0])
         if internal_end_suffix_all_nulls_temp is True:
             for i in range(digits_count - 1):
@@ -117,12 +126,16 @@ class RegexManager:
                         f"{str(int(start_suffix[0]) + i + 1)}"
                         f"[0-9]{dollar_symbol}"
                     )
+                    ic(5)
+                    ic(regex_parts)
                 else:
                     regex_parts.append(
                         f"{caret_symbol}{re.escape(common_prefix)}"
                         f"{str(int(start_suffix[0]) + i + 1)}"
                         f"[0-9]{{{len(end_suffix[1:])}}}{dollar_symbol}"
                     )
+                    ic(6)
+                    ic(regex_parts)
         else:
             for i in range(digits_count):
                 if f"{{{len(end_suffix[1:])}}}" == "{1}":
@@ -131,12 +144,16 @@ class RegexManager:
                         f"{str(int(start_suffix[0]) + i + 1)}"
                         f"[0-9]{dollar_symbol}"
                     )
+                    ic(7)
+                    ic(regex_parts)
                 else:
                     regex_parts.append(
                         f"{caret_symbol}{re.escape(common_prefix)}"
                         f"{str(int(start_suffix[0]) + i + 1)}"
                         f"[0-9]{{{len(end_suffix[1:])}}}{dollar_symbol}"
                     )
+                    ic(8)
+                    ic(regex_parts)
         return regex_parts
 
     def range_to_regex(self, start: str, end: str, separator: str, caret_symbol: str, dollar_symbol: str):

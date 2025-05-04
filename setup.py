@@ -45,7 +45,7 @@ options = {
 
 setup(
     name="RegEx",
-    version="2025.02.05",
+    version="2025.05.04",
     description="RegEx",
     author="Dmitriy Pavlov",
     executables=executables,
