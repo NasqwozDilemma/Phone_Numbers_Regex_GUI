@@ -408,7 +408,6 @@ class RegexOptimizer:
         3. Группирует регулярки, которые отличаются ровно в одном токене, исключая токены вида {}, и объединяет их,
             используя объединение отличающегося токена.
         """
-
         def merge_token_group(tokens: list) -> str:
             """
             Объединяет список токенов, которые могут быть одиночными цифрами (например, "4")
@@ -587,7 +586,10 @@ class RegexOptimizer:
 
         optimized_list = []
 
-        match = re.match(r"^\^(.+)\$$", regex)
+        if caret_symbol == "^" and dollar_symbol == "$":
+            match = re.match(r"^\^(.+)\$$", regex)
+        else:
+            match = re.match(r"^(.+)$", regex)
 
         if match:
             main_body = match.group(1)
@@ -647,8 +649,29 @@ class RegexOptimizer:
                 list_similar_strings = self.find_groups_with_one_token_diff(temp_optimized_list)
             ic("---", list_similar_strings)
 
+            temp_list_similar_strings = []
+            for regex_list in list_similar_strings:
+                # 1. Замена [a-a] на a
+                single_symbol_regex = r"\[([0-9])-([0-9])\]"
+                regex_list = [
+                    re.sub(
+                        single_symbol_regex,
+                        lambda m: m.group(1) if m.group(1) == m.group(2) else m.group(0),
+                        regex,
+                    )
+                    for regex in regex_list
+                ]
+                temp_list_similar_strings.append(regex_list)
+
+            if use_dot:
+                # 2. Замена [0-9] на точку, если нужно
+                for regex_list in temp_list_similar_strings:
+                    index = temp_list_similar_strings.index(regex_list)
+                    regex_list = [re.sub(r"\[0-9\]", ".", regex) for regex in regex_list]
+                    temp_list_similar_strings[index] = regex_list
+
             list_similar_curly_strings = self.find_groups_with_curly_token_diff(
-                [regex for sub_list in list_similar_strings for regex in sub_list]
+                [regex for sub_list in temp_list_similar_strings for regex in sub_list]
             )
             res_list_similar_strings = []
             for temp_temp_list_similar_string in list_similar_curly_strings:

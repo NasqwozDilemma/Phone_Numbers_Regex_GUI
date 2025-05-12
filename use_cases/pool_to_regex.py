@@ -17,47 +17,57 @@ class RegexManager:
         regex_parts = []
         for i in range(len(end_suffix)):
             if len(end_suffix[i:]) == 1:
-                regex_parts.append(
-                    f"{caret_symbol}{re.escape(common_prefix)}"
-                    f"{end_suffix[0:i]}"
-                    f"[{int(start_suffix[i])}-{int(end_suffix[i])}]{dollar_symbol}"
-                )
-            elif len(end_suffix[i:]) - 1 == 1:
-                regex_parts.append(
-                    f"{caret_symbol}{re.escape(common_prefix)}"
-                    f"{end_suffix[0:i]}"
-                    f"[{int(start_suffix[i])}-{int(end_suffix[i]) - 1}][0-9]{dollar_symbol}"
-                )
-            elif int(start_suffix[i]) == int(end_suffix[i]) - 1:
-                if f"{{{len(end_suffix[i:]) - 1}}}" == "{1}":
+                if start_suffix[i] == end_suffix[i]:
                     regex_parts.append(
                         f"{caret_symbol}{re.escape(common_prefix)}"
                         f"{end_suffix[0:i]}"
-                        f"{int(start_suffix[i])}"
-                        f"[0-9]{dollar_symbol}"
+                        f"{start_suffix[i]}{dollar_symbol}"
                     )
                 else:
                     regex_parts.append(
                         f"{caret_symbol}{re.escape(common_prefix)}"
                         f"{end_suffix[0:i]}"
-                        f"{int(start_suffix[i])}"
-                        f"[0-9]{{{len(end_suffix[i:]) - 1}}}{dollar_symbol}"
+                        f"[{int(start_suffix[i])}-{int(end_suffix[i])}]{dollar_symbol}"
                     )
             else:
-                if f"{{{len(end_suffix[i:]) - 1}}}" == "{1}":
+                if start_suffix[i] == end_suffix[i]:
+                    continue
+                elif len(end_suffix[i:]) - 1 == 1:
                     regex_parts.append(
                         f"{caret_symbol}{re.escape(common_prefix)}"
                         f"{end_suffix[0:i]}"
-                        f"[{int(start_suffix[i])}-{int(end_suffix[i]) - 1}]"
-                        f"[0-9]{dollar_symbol}"
+                        f"[{int(start_suffix[i])}-{int(end_suffix[i]) - 1}][0-9]{dollar_symbol}"
                     )
+                elif int(start_suffix[i]) == int(end_suffix[i]) - 1:
+                    if f"{{{len(end_suffix[i:]) - 1}}}" == "{1}":
+                        regex_parts.append(
+                            f"{caret_symbol}{re.escape(common_prefix)}"
+                            f"{end_suffix[0:i]}"
+                            f"{int(start_suffix[i])}"
+                            f"[0-9]{dollar_symbol}"
+                        )
+                    else:
+                        regex_parts.append(
+                            f"{caret_symbol}{re.escape(common_prefix)}"
+                            f"{end_suffix[0:i]}"
+                            f"{int(start_suffix[i])}"
+                            f"[0-9]{{{len(end_suffix[i:]) - 1}}}{dollar_symbol}"
+                        )
                 else:
-                    regex_parts.append(
-                        f"{caret_symbol}{re.escape(common_prefix)}"
-                        f"{end_suffix[0:i]}"
-                        f"[{int(start_suffix[i])}-{int(end_suffix[i]) - 1}]"
-                        f"[0-9]{{{len(end_suffix[i:]) - 1}}}{dollar_symbol}"
-                    )
+                    if f"{{{len(end_suffix[i:]) - 1}}}" == "{1}":
+                        regex_parts.append(
+                            f"{caret_symbol}{re.escape(common_prefix)}"
+                            f"{end_suffix[0:i]}"
+                            f"[{int(start_suffix[i])}-{int(end_suffix[i]) - 1}]"
+                            f"[0-9]{dollar_symbol}"
+                        )
+                    else:
+                        regex_parts.append(
+                            f"{caret_symbol}{re.escape(common_prefix)}"
+                            f"{end_suffix[0:i]}"
+                            f"[{int(start_suffix[i])}-{int(end_suffix[i]) - 1}]"
+                            f"[0-9]{{{len(end_suffix[i:]) - 1}}}{dollar_symbol}"
+                        )
         return regex_parts
 
     def regex_to_all_nines(

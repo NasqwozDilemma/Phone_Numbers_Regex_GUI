@@ -59,7 +59,9 @@ class CommandFrame(ctk.CTkFrame):
 
         try:
             phone_numbers_data = PhoneNumbersData([])
-            groups = self.pool_controller.prepare_data(self.parent.master.master.data_frame.pools_text.get("1.0", "end-1c"))
+            groups = self.pool_controller.prepare_data(
+                self.parent.master.master.data_frame.pools_text.get("1.0", "end-1c")
+            )
             phone_numbers_data.data_list = groups
 
             regexes = self.regex_manager.pools_to_regex(phone_numbers_data, separator, unuse_special_symbols)
