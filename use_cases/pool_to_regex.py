@@ -19,9 +19,7 @@ class RegexManager:
             if len(end_suffix[i:]) == 1:
                 if start_suffix[i] == end_suffix[i]:
                     regex_parts.append(
-                        f"{caret_symbol}{re.escape(common_prefix)}"
-                        f"{end_suffix[0:i]}"
-                        f"{start_suffix[i]}{dollar_symbol}"
+                        f"{caret_symbol}{re.escape(common_prefix)}{end_suffix[0:i]}{start_suffix[i]}{dollar_symbol}"
                     )
                 else:
                     regex_parts.append(
@@ -39,35 +37,19 @@ class RegexManager:
                         f"[{int(start_suffix[i])}-{int(end_suffix[i]) - 1}][0-9]{dollar_symbol}"
                     )
                 elif int(start_suffix[i]) == int(end_suffix[i]) - 1:
-                    if f"{{{len(end_suffix[i:]) - 1}}}" == "{1}":
-                        regex_parts.append(
-                            f"{caret_symbol}{re.escape(common_prefix)}"
-                            f"{end_suffix[0:i]}"
-                            f"{int(start_suffix[i])}"
-                            f"[0-9]{dollar_symbol}"
-                        )
-                    else:
-                        regex_parts.append(
-                            f"{caret_symbol}{re.escape(common_prefix)}"
-                            f"{end_suffix[0:i]}"
-                            f"{int(start_suffix[i])}"
-                            f"[0-9]{{{len(end_suffix[i:]) - 1}}}{dollar_symbol}"
-                        )
+                    regex_parts.append(
+                        f"{caret_symbol}{re.escape(common_prefix)}"
+                        f"{end_suffix[0:i]}"
+                        f"{int(start_suffix[i])}"
+                        f"[0-9]{{{len(end_suffix[i:]) - 1}}}{dollar_symbol}"
+                    )
                 else:
-                    if f"{{{len(end_suffix[i:]) - 1}}}" == "{1}":
-                        regex_parts.append(
-                            f"{caret_symbol}{re.escape(common_prefix)}"
-                            f"{end_suffix[0:i]}"
-                            f"[{int(start_suffix[i])}-{int(end_suffix[i]) - 1}]"
-                            f"[0-9]{dollar_symbol}"
-                        )
-                    else:
-                        regex_parts.append(
-                            f"{caret_symbol}{re.escape(common_prefix)}"
-                            f"{end_suffix[0:i]}"
-                            f"[{int(start_suffix[i])}-{int(end_suffix[i]) - 1}]"
-                            f"[0-9]{{{len(end_suffix[i:]) - 1}}}{dollar_symbol}"
-                        )
+                    regex_parts.append(
+                        f"{caret_symbol}{re.escape(common_prefix)}"
+                        f"{end_suffix[0:i]}"
+                        f"[{int(start_suffix[i])}-{int(end_suffix[i]) - 1}]"
+                        f"[0-9]{{{len(end_suffix[i:]) - 1}}}{dollar_symbol}"
+                    )
         return regex_parts
 
     def regex_to_all_nines(
@@ -75,95 +57,28 @@ class RegexManager:
     ):
         """Преобразует диапазон номеров, заканчивающийся на девятки,
         в регулярное выражение."""
-        internal_end_suffix_all_nulls_temp = False
-        for i in end_suffix[1:]:
-            if int(i) == 0:
-                internal_end_suffix_all_nulls_temp = True
-            else:
-                internal_end_suffix_all_nulls_temp = False
-                break
-        new_common_prefix = f"{common_prefix}{start_suffix[0]}"
-        new_start_suffix = f"{start_suffix[1:]}"
-        new_end_suffix = f'{"9" * (len(end_suffix[1:]))}'
         regex_parts = []
-        for i in range(len(new_start_suffix) - 1, -1, -1):
-            if len(new_start_suffix[i:]) == 1:
+        for i in range(len(start_suffix) - 1, -1, -1):
+            if len(start_suffix[i:]) == 1:
                 regex_parts.append(
-                    f"{caret_symbol}{re.escape(new_common_prefix)}"
-                    f"{new_start_suffix[0:i]}"
-                    f"[{int(new_start_suffix[i])}-9]{dollar_symbol}"
+                    f"{caret_symbol}{re.escape(common_prefix)}"
+                    f"{start_suffix[0:i]}"
+                    f"[{int(start_suffix[i])}-9]{dollar_symbol}"
                 )
-                ic(1)
-                ic(regex_parts)
-            elif len(new_start_suffix[i:]) - 1 == 1:
+            elif len(start_suffix[i:]) - 1 == 1:
                 regex_parts.append(
-                    f"{caret_symbol}{re.escape(new_common_prefix)}"
-                    f"{new_start_suffix[0:i]}"
-                    f"[{int(new_start_suffix[i]) + 1}-9][0-9]{dollar_symbol}"
+                    f"{caret_symbol}{re.escape(common_prefix)}"
+                    f"{start_suffix[0:i]}"
+                    f"[{int(start_suffix[i]) + 1}-9][0-9]{dollar_symbol}"
                 )
-                ic(2)
-                ic(regex_parts)
             else:
-                if f"{{{len(new_start_suffix) - 1}}}" == "{1}":
-                    regex_parts.append(
-                        f"{caret_symbol}{re.escape(common_prefix)}"
-                        f"{str(start_suffix[:i])}"
-                        f"{str(int(start_suffix[i]))}"
-                        f"[{int(new_start_suffix[i]) + 1}-"
-                        f"{int(new_end_suffix[i])}]"
-                        f"[0-9]{dollar_symbol}"
-                    )
-                    ic(3)
-                    ic(regex_parts)
-                else:
-                    regex_parts.append(
-                        f"{caret_symbol}{re.escape(common_prefix)}"
-                        f"{str(start_suffix[:i])}"
-                        f"{str(int(start_suffix[i]))}"
-                        f"[{int(new_start_suffix[i]) + 1}-"
-                        f"{int(new_end_suffix[i])}]"
-                        f"[0-9]{{{len(new_start_suffix) - i - 1}}}{dollar_symbol}"
-                    )
-                    ic(4)
-                    ic(new_start_suffix)
-                    ic(regex_parts)
-        digits_count = int(end_suffix[0]) - int(start_suffix[0])
-        if internal_end_suffix_all_nulls_temp is True:
-            for i in range(digits_count - 1):
-                if f"{{{len(end_suffix[1:])}}}" == "{1}":
-                    regex_parts.append(
-                        f"{caret_symbol}{re.escape(common_prefix)}"
-                        f"{str(int(start_suffix[0]) + i + 1)}"
-                        f"[0-9]{dollar_symbol}"
-                    )
-                    ic(5)
-                    ic(regex_parts)
-                else:
-                    regex_parts.append(
-                        f"{caret_symbol}{re.escape(common_prefix)}"
-                        f"{str(int(start_suffix[0]) + i + 1)}"
-                        f"[0-9]{{{len(end_suffix[1:])}}}{dollar_symbol}"
-                    )
-                    ic(6)
-                    ic(regex_parts)
-        else:
-            for i in range(digits_count):
-                if f"{{{len(end_suffix[1:])}}}" == "{1}":
-                    regex_parts.append(
-                        f"{caret_symbol}{re.escape(common_prefix)}"
-                        f"{str(int(start_suffix[0]) + i + 1)}"
-                        f"[0-9]{dollar_symbol}"
-                    )
-                    ic(7)
-                    ic(regex_parts)
-                else:
-                    regex_parts.append(
-                        f"{caret_symbol}{re.escape(common_prefix)}"
-                        f"{str(int(start_suffix[0]) + i + 1)}"
-                        f"[0-9]{{{len(end_suffix[1:])}}}{dollar_symbol}"
-                    )
-                    ic(8)
-                    ic(regex_parts)
+                regex_parts.append(
+                    f"{caret_symbol}{re.escape(common_prefix)}"
+                    f"{str(start_suffix[:i])}"
+                    f"[{int(start_suffix[i]) + 1}-"
+                    f"{int(end_suffix[i])}]"
+                    f"[0-9]{{{len(start_suffix) - i - 1}}}{dollar_symbol}"
+                )
         return regex_parts
 
     def range_to_regex(self, start: str, end: str, separator: str, caret_symbol: str, dollar_symbol: str):
@@ -175,7 +90,7 @@ class RegexManager:
         internal_end_suffix_all_nines = False
         end_suffix_all_nines = False
         all_internal_suffix_all_nulls = False
-        two_character_number = False
+        short_character_number = False
 
         if start == end:
             return f"{caret_symbol}{re.escape(start)}{dollar_symbol}"
@@ -258,35 +173,71 @@ class RegexManager:
                     break
             ic(all_internal_suffix_all_nulls)
 
-        # 'two_character_number'
-        if len(start) == 2:
-            two_character_number = True
-        ic(two_character_number)
+        # 'short_character_number'
+        if len(start) <= 2:
+            short_character_number = True
+        ic(short_character_number)
 
-        # 'two_character_number'
-        if two_character_number:
-            ic("two_character_number")
-            regex_parts.append(
-                f"{caret_symbol}{re.escape(common_prefix)}"
-                f"[{int(start_suffix[0])}-{int(end_suffix[0])}]{dollar_symbol}"
-            )
-            return f"{separator}".join(regex_parts)
+        # 'short_character_number'
+        if short_character_number:
+            ic("short_character_number")
+            if len(start) == 1:
+                if len(end) == 1:
+                    regex_parts.append(
+                        f"{caret_symbol}{re.escape(common_prefix)}"
+                        f"[{int(start_suffix)}-{int(end_suffix)}]{dollar_symbol}"
+                    )
+                    return f"{separator}".join(regex_parts)
+                elif len(end) == 2:
+                    regex_parts.append(
+                        f"{caret_symbol}{re.escape(common_prefix)}[{int(start_suffix)}-9]{dollar_symbol}"
+                    )
+                    for i in range(int(end_suffix[0])):
+                        if i + 1 == int(end_suffix[0]):
+                            regex_parts.append(
+                                f"{caret_symbol}{re.escape(common_prefix)}{end_suffix[0]}"
+                                f"[0-{int(end_suffix[-1])}]{dollar_symbol}"
+                            )
+                        else:
+                            regex_parts.append(f"{caret_symbol}{re.escape(common_prefix)}{i + 1}[0-9]{dollar_symbol}")
+                else:
+                    regex_parts.append(self.range_to_regex(start, "99", separator, caret_symbol, dollar_symbol))
+                    regex_parts.append(self.range_to_regex("100", end, separator, caret_symbol, dollar_symbol))
+            else:
+                if len(end) == 2:
+                    if common_prefix:
+                        regex_parts.append(
+                            f"{caret_symbol}{re.escape(common_prefix)}"
+                            f"[{int(start_suffix[-1])}-{int(end_suffix[-1])}]{dollar_symbol}"
+                        )
+                    else:
+                        regex_parts.append(
+                            f"{caret_symbol}{re.escape(common_prefix)}{int(start_suffix[0])}"
+                            f"[{int(start_suffix[-1])}-9]{dollar_symbol}"
+                        )
+                        for i in range(int(start_suffix[0]), int(end_suffix[0])):
+                            if i + 1 == int(end_suffix[0]):
+                                regex_parts.append(
+                                    f"{caret_symbol}{re.escape(common_prefix)}{end_suffix[0]}"
+                                    f"[0-{int(end_suffix[-1])}]{dollar_symbol}"
+                                )
+                            else:
+                                regex_parts.append(
+                                    f"{caret_symbol}{re.escape(common_prefix)}{i + 1}[0-9]{dollar_symbol}"
+                                )
+                else:
+                    regex_parts.append(self.range_to_regex(start, "99", separator, caret_symbol, dollar_symbol))
+                    regex_parts.append(self.range_to_regex("100", end, separator, caret_symbol, dollar_symbol))
 
         # '000 000'
         if all_internal_suffix_all_nulls:
             ic("000 000")
             digits_count = int(end_suffix[0]) - int(start_suffix[0])
             for i in range(digits_count):
-                if f"{{{len(start_suffix[1:])}}}" == f"{{{1}}}":
-                    regex_parts.append(
-                        f"{caret_symbol}{re.escape(common_prefix)}{str(int(start_suffix[0]) + i)}"
-                        f"[0-9]{dollar_symbol}"
-                    )
-                else:
-                    regex_parts.append(
-                        f"{caret_symbol}{re.escape(common_prefix)}{str(int(start_suffix[0]) + i)}"
-                        f"[0-9]{{{len(start_suffix[1:])}}}{dollar_symbol}"
-                    )
+                regex_parts.append(
+                    f"{caret_symbol}{re.escape(common_prefix)}{str(int(start_suffix[0]) + i)}"
+                    f"[0-9]{{{len(start_suffix[1:])}}}{dollar_symbol}"
+                )
             regex_parts.append(
                 f"{caret_symbol}{re.escape(common_prefix)}{end_suffix[0]}{start_suffix[1:]}{dollar_symbol}"
             )
@@ -295,12 +246,9 @@ class RegexManager:
         # '000 999'
         if start_suffix_all_nulls and end_suffix_all_nines:
             ic("000 999")
-            if f"{{{len(start_suffix)}}}" == f"{{{1}}}":
-                regex_parts.append(f"{caret_symbol}{re.escape(common_prefix)}[0-9]{dollar_symbol}")
-            else:
-                regex_parts.append(
-                    f"{caret_symbol}{re.escape(common_prefix)}[0-9]{{{len(start_suffix)}}}{dollar_symbol}"
-                )
+            regex_parts.append(
+                f"{caret_symbol}{re.escape(common_prefix)}[0-9]{{{len(start_suffix)}}}{dollar_symbol}"
+            )
             return f"{separator}".join(regex_parts)
 
         # 'internal 000 internal 999'
@@ -309,15 +257,11 @@ class RegexManager:
             digits_count = int(end_suffix[0]) - int(start_suffix[0])
             for i in range(digits_count + 1):
                 new_common_prefix = f"{common_prefix}{int(start_suffix[0]) + i}"
-                new_start_suffix = f'{"0" * len(start_suffix[1:])}'
-                new_end_suffix = f'{"9" * len(end_suffix[1:])}'
-                if f"{{{len(new_start_suffix)}}}" == f"{{{1}}}":
-                    regex_parts.append(f"{caret_symbol}{re.escape(new_common_prefix)}[0-9]{dollar_symbol}")
-                else:
-                    regex_parts.append(
-                        f"{caret_symbol}{re.escape(new_common_prefix)}[0-9]"
-                        f"{{{len(new_start_suffix)}}}{dollar_symbol}"
-                    )
+                new_start_suffix = f"{'0' * len(start_suffix[1:])}"
+                new_end_suffix = f"{'9' * len(end_suffix[1:])}"
+                regex_parts.append(
+                    f"{caret_symbol}{re.escape(new_common_prefix)}[0-9]{{{len(new_start_suffix)}}}{dollar_symbol}"
+                )
             return f"{separator}".join(regex_parts)
 
         # '000 ___'
@@ -329,28 +273,21 @@ class RegexManager:
             return f"{separator}".join(regex_parts)
 
         # '999 000'
-        if internal_start_suffix_all_nines and internal_end_suffix_all_nulls:
+        if internal_start_suffix_all_nines and internal_end_suffix_all_nulls and not short_character_number:
             ic("999 000")
             regex_parts.append(
                 f"{caret_symbol}{re.escape(common_prefix)}{start_suffix[0]}{start_suffix[1:]}{dollar_symbol}"
             )
             new_common_prefix = f"{common_prefix}{end_suffix[0]}"
-            new_start_suffix = f'{"0" * len(start_suffix[1:])}'
+            new_start_suffix = f"{'0' * len(start_suffix[1:])}"
             new_end_suffix = f"{end_suffix[1:]}"
             digits_count = int(end_suffix[0]) - int(start_suffix[0]) - 1
             for i in range(digits_count):
-                if f"{{{len(start_suffix[1:])}}}" == f"{{{1}}}":
-                    regex_parts.append(
-                        f"{caret_symbol}{re.escape(common_prefix)}"
-                        f"{str(int(start_suffix[0]) + i + 1)}"
-                        f"[0-9]{dollar_symbol}"
-                    )
-                else:
-                    regex_parts.append(
-                        f"{caret_symbol}{re.escape(common_prefix)}"
-                        f"{str(int(start_suffix[0]) + i + 1)}"
-                        f"[0-9]{{{len(start_suffix[1:])}}}{dollar_symbol}"
-                    )
+                regex_parts.append(
+                    f"{caret_symbol}{re.escape(common_prefix)}"
+                    f"{str(int(start_suffix[0]) + i + 1)}"
+                    f"[0-9]{{{len(start_suffix[1:])}}}{dollar_symbol}"
+                )
             regex_parts.append(
                 f"{caret_symbol}{re.escape(common_prefix)}{end_suffix[0]}{end_suffix[1:]}{dollar_symbol}"
             )
@@ -363,7 +300,7 @@ class RegexManager:
                 f"{caret_symbol}{re.escape(common_prefix)}{start_suffix[0]}{start_suffix[1:]}{dollar_symbol}"
             )
             new_common_prefix = f"{common_prefix}{end_suffix[0]}"
-            new_start_suffix = f'{"0" * len(start_suffix[1:])}'
+            new_start_suffix = f"{'0' * len(start_suffix[1:])}"
             new_end_suffix = f"{end_suffix[1:]}"
             digits_count = int(end_suffix[0]) - int(start_suffix[0])
             for i in range(digits_count):
@@ -382,13 +319,13 @@ class RegexManager:
             return f"{separator}".join(regex_parts)
 
         # '999 ___'
-        if internal_start_suffix_all_nines:
+        if internal_start_suffix_all_nines and not short_character_number:
             ic("999 ___")
             regex_parts.append(
                 f"{caret_symbol}{re.escape(common_prefix)}{start_suffix[0]}{start_suffix[1:]}{dollar_symbol}"
             )
             new_common_prefix = f"{common_prefix}{end_suffix[0]}"
-            new_start_suffix = f'{"0" * len(start_suffix[1:])}'
+            new_start_suffix = f"{'0' * len(start_suffix)}"
             new_end_suffix = f"{end_suffix[1:]}"
             regex_parts.extend(
                 self.regex_from_all_nulls(
@@ -398,14 +335,21 @@ class RegexManager:
             return f"{separator}".join(regex_parts)
 
         # '___ 000'
-        if not start_suffix_all_nulls and internal_end_suffix_all_nulls:
+        if not start_suffix_all_nulls and internal_end_suffix_all_nulls and not short_character_number:
             ic("___ 000")
+            new_common_prefix = f"{common_prefix}{start_suffix[0]}"
+            new_start_suffix = start_suffix[1:]
+            new_end_suffix = f"{'9' * len(end_suffix[1:])}"
+            ic(new_common_prefix)
+            ic(new_start_suffix)
+            ic(new_end_suffix)
             regex_parts.extend(
-                self.regex_to_all_nines(common_prefix, start_suffix, end_suffix, caret_symbol, dollar_symbol)
+                self.regex_to_all_nines(
+                    new_common_prefix, new_start_suffix, new_end_suffix, caret_symbol, dollar_symbol
+                )
             )
             regex_parts.append(
-                f'{caret_symbol}{re.escape(common_prefix)}{end_suffix[0]}'
-                f'{"0" * (len(end_suffix[1:]))}{dollar_symbol}'
+                f"{caret_symbol}{re.escape(common_prefix)}{end_suffix[0]}{'0' * (len(end_suffix[1:]))}{dollar_symbol}"
             )
             return f"{separator}".join(regex_parts)
 
@@ -414,6 +358,7 @@ class RegexManager:
             not internal_start_suffix_all_nulls
             and not internal_start_suffix_all_nines
             and internal_end_suffix_all_nines
+            and not short_character_number
         ):
             ic("___ 999")
             regex_parts.extend(
@@ -422,7 +367,7 @@ class RegexManager:
             return f"{separator}".join(regex_parts)
 
         # '___ ___'
-        if not start_suffix_all_nulls:
+        if not start_suffix_all_nulls and not short_character_number:
             ic("___ ___")
             for i in range(len(start_suffix) - 1, -1, -1):
                 if len(start_suffix[i:]) == 1:
@@ -452,35 +397,20 @@ class RegexManager:
                         f"[{int(start_suffix[i]) + 1}-9][0-9]{dollar_symbol}"
                     )
                 elif len(start_suffix[i:]) < len(start_suffix):
-                    if f"{{{len(start_suffix) - i - 1}}}" == f"{{{1}}}":
-                        regex_parts.append(
-                            f"{caret_symbol}{re.escape(common_prefix)}"
-                            f"{start_suffix[0:i]}"
-                            f"[{int(start_suffix[i]) + 1}-9]"
-                            f"[0-9]{dollar_symbol}"
-                        )
-                    else:
-                        regex_parts.append(
-                            f"{caret_symbol}{re.escape(common_prefix)}"
-                            f"{start_suffix[0:i]}"
-                            f"[{int(start_suffix[i]) + 1}-9]"
-                            f"[0-9]{{{len(start_suffix) - i - 1}}}{dollar_symbol}"
-                        )
+                    regex_parts.append(
+                        f"{caret_symbol}{re.escape(common_prefix)}"
+                        f"{start_suffix[0:i]}"
+                        f"[{int(start_suffix[i]) + 1}-9]"
+                        f"[0-9]{{{len(start_suffix) - i - 1}}}{dollar_symbol}"
+                    )
                 else:
                     digits_count = int(end_suffix[0]) - int(start_suffix[0]) - 1
                     for i in range(digits_count):
-                        if f"{{{len(start_suffix) - 1}}}" == f"{{{1}}}":
-                            regex_parts.append(
-                                f"{caret_symbol}{re.escape(common_prefix)}"
-                                f"{int(start_suffix[0]) + i + 1}"
-                                f"[0-9]{dollar_symbol}"
-                            )
-                        else:
-                            regex_parts.append(
-                                f"{caret_symbol}{re.escape(common_prefix)}"
-                                f"{int(start_suffix[0]) + i + 1}"
-                                f"[0-9]{{{len(start_suffix) - 1}}}{dollar_symbol}"
-                            )
+                        regex_parts.append(
+                            f"{caret_symbol}{re.escape(common_prefix)}"
+                            f"{int(start_suffix[0]) + i + 1}"
+                            f"[0-9]{{{len(start_suffix) - 1}}}{dollar_symbol}"
+                        )
                     new_start = f"{common_prefix}{end_suffix[0]}{'0' * (len(end_suffix[1:]))}"
                     new_end = f"{common_prefix}{end_suffix}"
                     regex_parts.append(self.range_to_regex(new_start, new_end, separator, caret_symbol, dollar_symbol))

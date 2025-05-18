@@ -1,6 +1,6 @@
 [project]
 name = "phone-numbers-regex-gui"
-version = "2025.05.04"
+version = "2025.05.18"
 description = "Numbers to Regex transformations."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -43,6 +43,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "coverage>=7.8.0",
     "cx-freeze>=7.2.10",
     "pytest>=8.3.5",
     "ruff>=0.11.0",
