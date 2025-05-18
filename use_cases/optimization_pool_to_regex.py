@@ -484,20 +484,20 @@ class RegexOptimizer:
                     common_tokens.append(merged)
             return "".join(common_tokens)
 
-        # 1. Замена [a-a] на a
-        single_symbol_regex = r"\[([0-9])-([0-9])\]"
-        regex_list = [
-            re.sub(
-                single_symbol_regex,
-                lambda m: m.group(1) if m.group(1) == m.group(2) else m.group(0),
-                regex,
-            )
-            for regex in regex_list
-        ]
+        # # 1. Замена [a-a] на a
+        # single_symbol_regex = r"\[([0-9])-([0-9])\]"
+        # regex_list = [
+        #     re.sub(
+        #         single_symbol_regex,
+        #         lambda m: m.group(1) if m.group(1) == m.group(2) else m.group(0),
+        #         regex,
+        #     )
+        #     for regex in regex_list
+        # ]
 
-        # 2. Замена [0-9] на точку, если нужно
-        if use_dot:
-            regex_list = [re.sub(r"\[0-9\]", ".", regex) for regex in regex_list]
+        # # 2. Замена [0-9] на точку, если нужно
+        # if use_dot:
+        #     regex_list = [re.sub(r"\[0-9\]", ".", regex) for regex in regex_list]
 
         # 3. Группировка регулярных выражений, отличающихся ровно в одном токене.
         groups = self.find_groups_with_one_token_diff(regex_list)
@@ -663,15 +663,26 @@ class RegexOptimizer:
                 ]
                 temp_list_similar_strings.append(regex_list)
 
+            temp_temp_list_similar_strings = []
+            for regex_list in temp_list_similar_strings:
+                # 2. Замена [a] на a
+                single_char_regex = r"\[([^\]\[])\]"
+                regex_list = [
+                    re.sub(single_char_regex, r"\1", regex)
+                    for regex in regex_list
+                ]
+
+                temp_temp_list_similar_strings.append(regex_list)
+
             if use_dot:
-                # 2. Замена [0-9] на точку, если нужно
-                for regex_list in temp_list_similar_strings:
-                    index = temp_list_similar_strings.index(regex_list)
+                # 3. Замена [0-9] на точку, если нужно
+                for regex_list in temp_temp_list_similar_strings:
+                    index = temp_temp_list_similar_strings.index(regex_list)
                     regex_list = [re.sub(r"\[0-9\]", ".", regex) for regex in regex_list]
-                    temp_list_similar_strings[index] = regex_list
+                    temp_temp_list_similar_strings[index] = regex_list
 
             list_similar_curly_strings = self.find_groups_with_curly_token_diff(
-                [regex for sub_list in temp_list_similar_strings for regex in sub_list]
+                [regex for sub_list in temp_temp_list_similar_strings for regex in sub_list]
             )
             res_list_similar_strings = []
             for temp_temp_list_similar_string in list_similar_curly_strings:
