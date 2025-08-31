@@ -69,7 +69,7 @@ class RegexManager:
                 regex_parts.append(
                     f"{caret_symbol}{re.escape(common_prefix)}"
                     f"{start_suffix[0:i]}"
-                    f"[{int(start_suffix[i]) + 1}-9][0-9]{dollar_symbol}"
+                    f"[{int(start_suffix[i]) + 1}-{int(end_suffix[i])}][0-9]{dollar_symbol}"
                 )
             else:
                 regex_parts.append(
